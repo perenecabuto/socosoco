@@ -76,7 +76,7 @@ function Game() {
         object.update(_self.context, _self.canvas);
     }
 
-    setTimeout(_self.drawScreen, 100);
+    setTimeout(_self.drawScreen, 150);
   };
 
   this.cleanScreen = function() {
@@ -100,6 +100,8 @@ function Fighter() {
 
   this.images = {
     stopped: new Image(),
+    idle1: new Image(),
+    idle2: new Image(),
     moving1: new Image(),
     moving2: new Image(),
     punch_left: new Image(),
@@ -107,6 +109,8 @@ function Fighter() {
   };
 
   this.images.stopped.src = 'player_idle.png';
+  this.images.idle1.src = 'player_idle1.png';
+  this.images.idle2.src = 'player_idle2.png';
   this.images.moving1.src = 'player_moving_l.png';
   this.images.moving2.src = 'player_moving_r.png';
   this.images.punch_left.src = 'player_punch_l.png';
@@ -115,20 +119,18 @@ function Fighter() {
   this.update = function(context, canvas) {
     context.save();
 
-    if (this.rotation >= 360 || this.rotation <= -360) {
-      this.rotation = 0;
-    }
+    this.x = this.x < 0 ? 0 : (this.x > canvas.width  ? canvas.width  : this.x);
+    this.y = this.y < 0 ? 0 : (this.y > canvas.height ? canvas.height : this.y);
+
 
     context.translate(this.x + (this.size/2), this.y + (this.size/2));
     context.rotate(this.rotation * (Math.PI / 180));
-
     context.drawImage(this.getImage(), 0, 0, this.size * 2, this.size * 2, -this.size/2, -this.size/2, this.size, this.size);
 
     context.restore();
 
     context.font = 'bold 10px sans-serif';
-    context.strokeText(this.rotation, 10, 10);
-
+    context.strokeText("Ang: " + this.rotation + " (X: " + Math.round(this.x) + " Y: " + Math.round(this.y) + ")", 10, 10);
   };
 
   this.isStopped = function() {
@@ -151,28 +153,47 @@ function Fighter() {
     this.state = PUNCHING;
   }
 
+
   this.moveUp = function() {
-    if (!this.isStopped()) {
-      this.y -= this.stepSize;
-    }
+    this.step(false);
   };
 
   this.moveDown = function() {
-    if (!this.isStopped()) {
-      this.y += this.stepSize;
-    }
+    this.step(true)
   };
 
   this.moveRight = function() {
-    if (!this.isStopped()) {
-      this.rotation += this.rotationStep;
-    }
+    this.rotate(false);
   };
 
   this.moveLeft = function() {
+    this.rotate(true);
+  };
+
+
+  this.step = function(reverse) {
+    reverse = reverse || false;
+    mult = reverse ? -1 : +1;
+
     if (!this.isStopped()) {
-      this.rotation -= this.rotationStep;
+      this.y -= this.getDirection(reverse) * this.stepSize * Math.cos((Math.PI / 180) * this.rotation);
+      this.x += this.getDirection(reverse) * this.stepSize * Math.sin((Math.PI / 180) * this.rotation);
     }
+  };
+
+  this.rotate = function(reverse) {
+    if (!this.isStopped()) {
+      this.rotation += this.getDirection(reverse) * this.rotationStep;
+
+      if (this.rotation >= 360 || this.rotation < -360) {
+        this.rotation = 0;
+      }
+    }
+  };
+
+  this.getDirection = function(reverse) {
+    reverse = reverse || false;
+    return reverse ? -1 : +1;
   };
 
   this.getImage = function() {
@@ -181,6 +202,9 @@ function Fighter() {
     this._movement = (!this._movement || this._movement > 1) ? 0 : 1;
 
     switch(this.state) {
+      case STOPPED:
+        image = this._movement == 0 ? this.images.idle1 : this.images.idle2;
+        break;
       case PUNCHING:
         image = this._movement == 0 ? this.images.punch_left : this.images.punch_right;
         break;
