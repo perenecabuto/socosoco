@@ -129,8 +129,9 @@ function Fighter() {
 
     context.restore();
 
-    context.font = 'bold 10px sans-serif';
+    context.font = '10px sans-serif';
     context.strokeText("Ang: " + this.rotation + " (X: " + Math.round(this.x) + " Y: " + Math.round(this.y) + ")", 10, 10);
+    context.strokeText("SETAS para andar, ESPACO para Bater =)", 60, 145);
   };
 
   this.isStopped = function() {
