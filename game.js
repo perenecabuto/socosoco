@@ -87,7 +87,7 @@ function Game() {
 
     for (i in _self.objects) {
         var object = _self.objects[i];
-        _self.objectManager.update(object);
+        _self.objectManager.updatePosition(object);
     }
 
     _self.objectManager.updateForCollision(_self.objects);
@@ -107,7 +107,7 @@ function ObjectManager(context, canvas) {
   this.context = context;
   this.canvas = canvas;
 
-  this.update = function(object) {
+  this.updatePosition = function(object) {
     this.context.save();
 
     object.x = object.x < 0 ? 0 : (object.x > this.canvas.width  ? this.canvas.width  : object.x);
@@ -128,12 +128,28 @@ function ObjectManager(context, canvas) {
       for (i in objects) {
         var currObj = objects[i];
         if (object != currObj && this.getDistance(object, currObj) <= object.size / 2) {
-          object.move();
-          object.moveBackward();
-          object.stop();
+          this.chove(object, currObj);
         }
       }
     }
+  };
+
+  this.chove = function(obj1, obj2) {
+    var opositeAngle = false;
+    var angle1 = obj1.getAngle();
+    var angle2 = obj2.getAngle();
+    var angSlices = 90 / obj1.angleStep;
+    var obj = (angle1 =! angle2) ? obj1 : obj2;
+
+    for (i = 1; i <= angSlices; i++) {
+      if (opositeAngle) break;
+      opositeAngle = Math.abs((i * angle1) - angle2) == 180;
+    }
+
+    movement = (opositeAngle) ? obj.moveBackward : obj.moveForward;
+    obj.move();
+    movement.call(obj);
+    obj.stop();
   };
 
   this.getDistance = function(obj1, obj2) {
@@ -205,7 +221,6 @@ function Fighter() {
     this.state = PUNCHING;
   }
 
-
   this.moveForward = function() {
     this.step(false);
   };
@@ -232,14 +247,6 @@ function Fighter() {
     }
   };
 
-  this.getNextYStep = function() {
-    return -1 * this.stepSize * Math.cos((Math.PI / 180) * this.angle);
-  };
-
-  this.getNextXStep = function() {
-    return this.stepSize * Math.sin((Math.PI / 180) * this.angle)
-  }
-
   this.rotate = function(reverse) {
     if (!this.isStopped()) {
       this.angle += this.getDirection(reverse) * this.angleStep;
@@ -249,6 +256,20 @@ function Fighter() {
       }
     }
   };
+
+  this.getAngle = function() {
+    angle = this.angle < 0 ? 360 + this.angle : this.angle;
+    angle = Math.round(angle / this.angleStep) * this.angleStep;
+    return angle;
+  };
+
+  this.getNextYStep = function() {
+    return -1 * this.stepSize * Math.cos((Math.PI / 180) * this.angle);
+  };
+
+  this.getNextXStep = function() {
+    return this.stepSize * Math.sin((Math.PI / 180) * this.angle)
+  }
 
   this.getDirection = function(reverse) {
     reverse = reverse || false;
