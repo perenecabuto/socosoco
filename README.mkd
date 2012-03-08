@@ -32,7 +32,7 @@ If it runned successfully you should see a message like above:
 Go [http://localhost:3000/](http://localhost:3000/)
 
 How to play
-_
+-
 
 Use left/right arrows to rotate the player, up to forward, down to backward and space to puch.
 
