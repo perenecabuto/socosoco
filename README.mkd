@@ -19,7 +19,7 @@ How to use
     git clone git@github.com:perenecabuto/socosoco.git
     cd socosoco
     bundle install
-    ruby server.py
+    ruby server.rb
 
 If it runned successfully you should see a message like above:
 
