@@ -12,7 +12,6 @@ Requirements
 How to use
 -
 
-
 ### Run server
 
     gem install bundler
@@ -32,8 +31,7 @@ If it runned successfully you should see a message like below:
 
 Go [http://localhost:3000/](http://localhost:3000/)
 
-How to play
--
+### Play
 
 Use **left/right arrows to rotate** the player, **up to forward**, **down to backward** and **space to punch**.
 
