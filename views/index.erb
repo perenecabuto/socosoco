@@ -1,9 +1,12 @@
 <html>
   <script type="text/javascript" src="fighter.js"></script>
   <script type="text/javascript" src="game.js"></script>
+  <script type="text/javascript" src="object_manager.js"></script>
   <script type="text/javascript" src="connection.js"></script>
   <script type="text/javascript">
     window.addEventListener('load', createNewGame, false);
+    window.addEventListener('load', doConnection, false);
+    // window.addEventListener('load', prepareConnection, false);
   </script>
 
   <canvas id="board" style="margin:auto; width: 90%; height: 90%"></canvas>

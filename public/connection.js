@@ -1,3 +1,11 @@
+function doConnection() {
+  GameConnectionManager.connection = GameConnectionManager.connection
+    || new GameConnectionManager('ws://' + window.location.hostname + ":5777", game);
+
+  GameConnectionManager.connection.persist();
+  setTimeout(doConnection, 100);
+}
+
 function GameConnectionManager(uri, game) {
   var _self = this;
 
@@ -5,6 +13,12 @@ function GameConnectionManager(uri, game) {
   this.websocket = new WebSocket(uri);
   this.persistentPlayers = [];
   this.currentPlayer = null;
+
+  this.persist = function() {
+    if (this.websocket.ready) {
+      this.websocket.send(this.currentPlayer.freeze());
+    }
+  }
 
   this.websocket.onopen = function(evt) {
     this.ready = true;
@@ -20,6 +34,10 @@ function GameConnectionManager(uri, game) {
       _self.currentPlayer = new PersistentObject(response.player.id, player);
       _self.currentPlayer.update(response.player.data);
       _self.game.prepareEvents(player);
+
+      _self.game.drawScreenCallback = function(game) {
+        game.showInfo(player);
+      };
     }
 
     if (response.other) {
@@ -51,23 +69,9 @@ function GameConnectionManager(uri, game) {
 
   this.websocket.onclose = function(evt) {
     this.ready = false;
-
     console.log('Close', evt.data);
   };
 
-  this.persist = function() {
-    if (this.websocket.ready) {
-      this.websocket.send(this.currentPlayer.freeze());
-    }
-  }
-
-  this.createChallenger = function() {
-    var fighter = new Fighter();
-    fighter.x = Math.round(Math.random() * game.canvas.width);
-    fighter.y = Math.round(Math.random() * game.canvas.height);
-    fighter.angle = Math.round(Math.random() * 360);
-    this.game.addObject(fighter);
-  };
 }
 
 function PersistentObject(id, object) {

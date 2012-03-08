@@ -28,10 +28,11 @@ class App < Sinatra::Base
   get '/' do
     erb :index
   end
+
 end
 
 EventMachine.run do     # <-- Changed EM to EventMachine
-  EventMachine::WebSocket.start(:host => '0.0.0.0', :port => 8080) do |ws|
+  EventMachine::WebSocket.start(:host => '0.0.0.0', :port => 5777) do |ws|
     ws.onopen {
       id = ws.request['cookie']
       player = @session_players[id] ||= Player.new(:id => (@id_seq += 1))
@@ -64,6 +65,6 @@ EventMachine.run do     # <-- Changed EM to EventMachine
     }
   end
 
-  App.run!({:port => 3000}) 
+  App.run!({:port => 3000})
 end
 
