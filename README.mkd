@@ -15,11 +15,11 @@ How to use
 
 ### Run server
 
-    $ gem install bundler
-    $ git clone .../socosoco
-    $ cd socosoco
-    $ bundle install
-    $ ruby server.py
+    gem install bundler
+    git clone git@github.com:perenecabuto/socosoco.git
+    cd socosoco
+    bundle install
+    ruby server.py
 
 If it runned successfully you should see a message like above:
 
