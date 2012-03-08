@@ -21,7 +21,7 @@ How to use
     bundle install
     ruby server.rb
 
-If it runned successfully you should see a message like above:
+If it runned successfully you should see a message like below:
 
     >> Using file adapter
     >> Thin web server (v1.3.1 codename Triple Espresso)
