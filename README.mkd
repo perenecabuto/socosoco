@@ -10,7 +10,8 @@ Requirements
 **For server**: Ruby interpreter and rubygems installed
 
 How to use
-_
+-
+
 
 ### Run server
 
@@ -34,7 +35,7 @@ Go [http://localhost:3000/](http://localhost:3000/)
 How to play
 -
 
-Use left/right arrows to rotate the player, up to forward, down to backward and space to puch.
+Use **left/right arrows to rotate** the player, **up to forward**, **down to backward** and **space to punch**.
 
 **PS.:** It is a multiplayer game! It means that there is **one user per session**.
 
